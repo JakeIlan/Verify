@@ -1,15 +1,17 @@
 import java.util.LinkedList;
 
 public class DotNode {
+    int rank = 0;
     int id;
     String type = "oval";
     String data;
     LinkedList<DotNode> controlChildren = new LinkedList<>();
     LinkedList<DotNode> dataChildren = new LinkedList<>();
 
-    DotNode(String data, int id) {
+    DotNode(String data, int id, int rank) {
         this.id = id;
         this.data = data;
+        this.rank = rank;
     }
 
     DotNode(String data, String type, int id) {
@@ -20,6 +22,15 @@ public class DotNode {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+
+    public void removeAllChildren() {
+        this.controlChildren.clear();
+        this.dataChildren.clear();
     }
 
     public void addControlChild(DotNode controlChild) {
@@ -34,9 +45,17 @@ public class DotNode {
         return controlChildren;
     }
 
+    public String printChildren() {
+        StringBuilder str = new StringBuilder("CHILDREN OF " + this.data + ": \n");
+        for (DotNode node : this.getControlChildren()) {
+            str.append(node.toString());
+        }
+        return str.toString();
+    }
+
     @Override
     public String toString() {
-        return "DotNode data='" + data + '\'' + '\n';
+        return  data + " rank - " + rank + '\n';
     }
 }
 
