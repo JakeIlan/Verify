@@ -8,6 +8,9 @@ return n rank - 2
 var i = 1 rank - 1
 while (i < n) { rank - 1
 c = a + b rank - 2
+if (c == 10) { rank - 2
+print(c) rank - 3
+} rank - 3
 a = b rank - 2
 b = c rank - 2
 i++ rank - 2

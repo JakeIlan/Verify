@@ -18,24 +18,10 @@ public class DotGraphBuilder {
                 }
 
             }
-            for (int i = 0; i < dotNodes.size(); i++) {
-                if (i > 0) {
-                    if (dotNodes.get(i).rank > dotNodes.get(i - 1).rank &&
-                            dotNodes.get(i).rank > 1) {
-                        writer.write("subgraph cluster_" + (i - 1) + " {\n style = invis;\n");
-                        for (DotNode child : dotNodes.get(i - 1).getControlChildren()) {
-                            writer.write(dotNodes.get(i - 1).id + " -> " + child.id + "\n");
-                        }
-                    }
-                    if (i < dotNodes.size() - 1 && dotNodes.get(i).rank > dotNodes.get(i + 1).rank &&
-                            dotNodes.get(i).rank > 1) {
-                        writer.write("}\n");
-                    }
+            for (DotNode dotNode : dotNodes) {
 
-                }
-
-                for (DotNode child : dotNodes.get(i).getControlChildren()) {
-                    writer.write(dotNodes.get(i).id + " -> " + child.id + "\n");
+                for (DotNode child : dotNode.getControlChildren()) {
+                    writer.write(dotNode.id + " -> " + child.id + "\n");
                 }
 
             }
