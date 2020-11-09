@@ -3,7 +3,8 @@ import java.util.LinkedList;
 public class DotNode {
     int rank = 0;
     int id;
-    String type = "oval";
+    String bool = "";
+    String type = "rec";
     String data;
     LinkedList<DotNode> controlChildren = new LinkedList<>();
     LinkedList<DotNode> dataChildren = new LinkedList<>();
@@ -26,6 +27,10 @@ public class DotNode {
 
     public void setRank(int rank) {
         this.rank = rank;
+    }
+
+    public void setBool(String bool) {
+        this.bool = bool;
     }
 
     public void removeAllChildren() {
@@ -55,7 +60,7 @@ public class DotNode {
 
     @Override
     public String toString() {
-        return  data + " rank - " + rank + '\n';
+        return  id + ": " + data + " rank - " + rank + '\n';
     }
 }
 

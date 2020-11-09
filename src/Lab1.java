@@ -23,17 +23,18 @@ public class Lab1 {
                 }
                 DotNode node = new DotNode(line, i, rank);
 
-                if (line.contains("if")) {
+                if (line.contains("if") || line.contains("while")) {
                     node.setType("diamond");
                 } else if (line.contains("fun") || line.contains("return")) {
                     node.setType("rec");
                 }
                 dotNodes.addLast(node);
                 if (rank > 0 && !node.data.equals("}")) {
-                    if (node.rank >= dotNodes.get(i - 1).rank) {
-//                        if (!node.data.equals(dotNodes.get(i - 1).data)) {
-                            dotNodes.get(i - 1).addControlChild(node);
-//                        }
+                    if (node.rank == dotNodes.get(i - 1).rank) {
+                        dotNodes.get(i - 1).addControlChild(node);
+                    } else if (node.rank > dotNodes.get(i - 1).rank) {
+                        dotNodes.get(i - 1).addControlChild(node);
+                        node.setBool("True");
                     } else {
                         int j = node.id - 1;
                         while (node.rank != dotNodes.get(j).rank) {
@@ -41,11 +42,11 @@ public class Lab1 {
                         }
                         if (!node.data.equals(dotNodes.get(i - 1).data)) {
                             dotNodes.get(j).addControlChild(node);
+                            node.setBool("False");
                         }
                     }
-                }
 
-//                writer.write(line + "\n");
+                }
                 if (line.contains("{")) {
                     rank++;
                 }
@@ -59,6 +60,15 @@ public class Lab1 {
             for (DotNode n : dotNodes) {
                 if (n.data.contains("return")) {
                     n.removeAllChildren();
+                }
+                if (n.rank > 1 && dotNodes.get(dotNodes.indexOf(n) + 1).data.contains("}")) {
+                    int j = n.id - 1;
+                    while (n.rank != dotNodes.get(j).rank + 1) {
+                        j--;
+                    }
+                    if (dotNodes.get(j).data.contains("while")) {
+                        n.addControlChild(dotNodes.get(j));
+                    }
                 }
                 writer.write(n.toString());
             }

@@ -16,14 +16,17 @@ public class DotGraphBuilder {
                             " [shape=" + dotNode.type +
                             ", label =\"" + dotNode.data + "\"];\n");
                 }
-
             }
             for (DotNode dotNode : dotNodes) {
-
                 for (DotNode child : dotNode.getControlChildren()) {
-                    writer.write(dotNode.id + " -> " + child.id + "\n");
-                }
+                    if ((!child.bool.equals("True") && !child.bool.equals("False")) ||
+                            dotNode.rank == 0) {
+                        writer.write(dotNode.id + " -> " + child.id + "\n");
+                    } else {
+                        writer.write(dotNode.id + " -> " + child.id + "[label = " + child.bool + "]" + "\n");
+                    }
 
+                }
             }
             writer.write("}");
             writer.flush();
