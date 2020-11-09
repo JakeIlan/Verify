@@ -46,7 +46,7 @@ public class DotNode {
     }
 
     public String printChildren() {
-        StringBuilder str = new StringBuilder("CHILDREN OF " + this.data + ": \n");
+        StringBuilder str = new StringBuilder("CHILDREN OF " + this.data + " of rank " + this.rank + '\n');
         for (DotNode node : this.getControlChildren()) {
             str.append(node.toString());
         }

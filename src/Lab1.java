@@ -22,38 +22,45 @@ public class Lab1 {
                     continue;
                 }
                 DotNode node = new DotNode(line, i, rank);
-                if (line.contains("{")) {
-                    rank++;
-                }
-                if (line.contains("}")) {
-                    rank--;
-                }
+
                 if (line.contains("if")) {
                     node.setType("diamond");
                 } else if (line.contains("fun") || line.contains("return")) {
                     node.setType("rec");
                 }
                 dotNodes.addLast(node);
-                if (rank > 1 || !dotNodes.isEmpty()) {
-                    if (node.rank >= dotNodes.get(i).rank) {
-                        if (!node.data.equals(dotNodes.get(i).data)) {
-                            dotNodes.get(i).addControlChild(node);
-                        }
+                if (rank > 0 && !node.data.equals("}")) {
+                    if (node.rank >= dotNodes.get(i - 1).rank) {
+//                        if (!node.data.equals(dotNodes.get(i - 1).data)) {
+                            dotNodes.get(i - 1).addControlChild(node);
+//                        }
                     } else {
-                        int j = node.id;
+                        int j = node.id - 1;
                         while (node.rank != dotNodes.get(j).rank) {
                             j--;
                         }
-                        dotNodes.get(j).addControlChild(node);
+                        if (!node.data.equals(dotNodes.get(i - 1).data)) {
+                            dotNodes.get(j).addControlChild(node);
+                        }
                     }
                 }
 
 //                writer.write(line + "\n");
+                if (line.contains("{")) {
+                    rank++;
+                }
+                if (line.contains("}")) {
+                    rank--;
+                }
+
                 line = reader.readLine();
                 i++;
             }
             for (DotNode n : dotNodes) {
-                writer.write(n.toString() + n.printChildren());
+                if (n.data.contains("return")) {
+                    n.removeAllChildren();
+                }
+                writer.write(n.toString());
             }
             writer.flush();
             DotGraphBuilder graph = new DotGraphBuilder(dotNodes);

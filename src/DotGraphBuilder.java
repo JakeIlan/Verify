@@ -11,24 +11,27 @@ public class DotGraphBuilder {
             FileWriter writer = new FileWriter(output, false);
             writer.write("digraph G {\n");
             for (DotNode dotNode : dotNodes) {
+                if (!dotNode.data.matches("[}]")) {
+                    writer.write(dotNode.id +
+                            " [shape=" + dotNode.type +
+                            ", label =\"" + dotNode.data + "\"];\n");
+                }
 
-                writer.write(dotNode.id +
-                        " [shape=" + dotNode.type +
-                        ", label =\"" + dotNode.data + "\"];\n");
             }
             for (int i = 0; i < dotNodes.size(); i++) {
                 if (i > 0) {
                     if (dotNodes.get(i).rank > dotNodes.get(i - 1).rank &&
                             dotNodes.get(i).rank > 1) {
-                        writer.write("subgraph cluster_" + i + " {\n style = invis;\n");
-                        for (DotNode child : dotNodes.get(i).getControlChildren()) {
-                            writer.write(" " + dotNodes.get(i).id + " -> " + child.id + "\n");
+                        writer.write("subgraph cluster_" + (i - 1) + " {\n style = invis;\n");
+                        for (DotNode child : dotNodes.get(i - 1).getControlChildren()) {
+                            writer.write(dotNodes.get(i - 1).id + " -> " + child.id + "\n");
                         }
                     }
-                    if (i < dotNodes.size() - 1 && dotNodes.get(i).rank < dotNodes.get(i + 1).rank &&
+                    if (i < dotNodes.size() - 1 && dotNodes.get(i).rank > dotNodes.get(i + 1).rank &&
                             dotNodes.get(i).rank > 1) {
                         writer.write("}\n");
                     }
+
                 }
 
                 for (DotNode child : dotNodes.get(i).getControlChildren()) {
