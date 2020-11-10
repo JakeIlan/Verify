@@ -1,6 +1,7 @@
 import java.io.*;
-import java.util.Collections;
-import java.util.LinkedList;
+import java.util.ArrayList;
+
+
 
 public class Lab1 {
     public static void main(String[] args) {
@@ -11,7 +12,7 @@ public class Lab1 {
             FileWriter writer = new FileWriter(output, false);
             FileReader fr = new FileReader(input);
             BufferedReader reader = new BufferedReader(fr);
-            LinkedList<DotNode> dotNodes = new LinkedList<>();
+            ArrayList<DotNode> dotNodes = new ArrayList<>();
             String line = reader.readLine();
             int i = 0;
             int rank = 0;
@@ -59,7 +60,7 @@ public class Lab1 {
                     }
                 }
 
-                dotNodes.addLast(node);
+                dotNodes.add(node);
 
                 if (line.contains("{")) {
                     rank++;
@@ -123,8 +124,13 @@ public class Lab1 {
                     case "variable": {
                         String s = dotNodes.get(i).text.replaceAll("^var ", "");
                         dotNodes.get(i).setText(s);
-                        String[] tmp = s.split(" ");
-                        Collections.addAll(dotNodes.get(i).data, tmp);
+                        String[] tmp = s.split("[\\s+\\-=*/()]+");
+                        for (String v : tmp) {
+                            if (!v.isEmpty() && !v.matches("[0-9]+")) {
+                                dotNodes.get(i).data.add(v);
+                            }
+                        }
+
                         break;
                     }
                     case "if": {
@@ -140,8 +146,12 @@ public class Lab1 {
                     }
                     case "default": {
                         String s = dotNodes.get(i).text;
-                        String[] tmp = s.split(" ");
-                        Collections.addAll(dotNodes.get(i).data, tmp);
+                        String[] tmp = s.split("[\\s+\\-=*/()]+");
+                        for (String v : tmp) {
+                            if (!v.isEmpty() && !v.matches("[0-9]+")) {
+                                dotNodes.get(i).data.add(v);
+                            }
+                        }
                         break;
                     }
                 }
@@ -158,7 +168,7 @@ public class Lab1 {
         }
     }
 
-    static public int getLastDataNodeID(LinkedList<DotNode> dotNodes, int id) {
+    static public int getLastDataNodeID(ArrayList<DotNode> dotNodes, int id) {
         int res = 0;
         if (id == 0) return res;
         int i = id;

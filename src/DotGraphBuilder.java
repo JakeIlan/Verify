@@ -2,13 +2,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class DotGraphBuilder {
 
-    LinkedList<DotNode> dotNodes;
+    ArrayList<DotNode> dotNodes;
 
-    DotGraphBuilder(LinkedList<DotNode> dotNodes) {
+    DotGraphBuilder(ArrayList<DotNode> dotNodes) {
         this.dotNodes = dotNodes;
         File output = new File("src/output_dot.txt");
         try {
@@ -32,7 +31,7 @@ public class DotGraphBuilder {
 
                 }
             }
-            writer.write("}");
+
             writer.flush();
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -43,14 +42,22 @@ public class DotGraphBuilder {
 
     public void buildDataPath() {
         System.out.println("DATA PATH: WORK IN PROGRESS");
-        File output = new File("src/output_test.txt");
+        File output = new File("src/output_dot.txt");
         try {
-            FileWriter writer = new FileWriter(output, false);
-            for (DotNode n : dotNodes) {
-
-                writer.write(n.toString() + n.printData());
-
+            FileWriter writer = new FileWriter(output, true);
+            for (int i = 0; i < dotNodes.size() - 1; i++) {
+                if (dotNodes.get(i).type.equals("variable")) {
+                    for (int j = i + 1; j < dotNodes.size(); j++) {
+                        for (String d : dotNodes.get(i).data) {
+                            if (dotNodes.get(j).data.contains(d)) {
+                                writer.write(dotNodes.get(i).id + " -> " + dotNodes.get(j).id
+                                    + " [style = dashed, weight = 0.1, color = grey]\n");
+                            }
+                        }
+                    }
+                }
             }
+            writer.write("}");
             writer.flush();
         } catch (IOException e) {
             System.out.println(e.getMessage());

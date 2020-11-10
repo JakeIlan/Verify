@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class DotNode {
     int rank;
@@ -9,8 +8,8 @@ public class DotNode {
     String type = "default";
     String text;
     ArrayList<String> data = new ArrayList<>();
-    LinkedList<DotNode> controlChildren = new LinkedList<>();
-    LinkedList<DotNode> dataChildren = new LinkedList<>();
+    ArrayList<DotNode> controlChildren = new ArrayList<>();
+    ArrayList<DotNode> dataChildren = new ArrayList<>();
 
     DotNode(String text, int id, int rank) {
         this.id = id;
@@ -40,14 +39,14 @@ public class DotNode {
     }
 
     public void addControlChild(DotNode controlChild) {
-        this.controlChildren.addLast(controlChild);
+        this.controlChildren.add(controlChild);
     }
 
     public void addDataChild(DotNode dataChild) {
-        this.dataChildren.addLast(dataChild);
+        this.dataChildren.add(dataChild);
     }
 
-    public LinkedList<DotNode> getControlChildren() {
+    public ArrayList<DotNode> getControlChildren() {
         return controlChildren;
     }
 
@@ -67,6 +66,18 @@ public class DotNode {
         }
         return str.toString();
     }
+
+//    public ArrayList<DotNode> getChildTree(DotNode node) {
+//        ArrayList<DotNode> res = new ArrayList<>();
+//        for (DotNode child : node.getControlChildren()) {
+//            if (!res.contains(child)) {
+//                res.add(child);
+//            }
+//
+//        }
+//
+//        return res;
+//    }
 
     @Override
     public String toString() {

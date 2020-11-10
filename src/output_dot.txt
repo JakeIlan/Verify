@@ -32,4 +32,13 @@ digraph G {
 15 -> 16
 16 -> 17
 17 -> 10
+1 -> 11 [style = dashed, weight = 0.3, color = grey]
+1 -> 15 [style = dashed, weight = 0.3, color = grey]
+2 -> 11 [style = dashed, weight = 0.3, color = grey]
+2 -> 15 [style = dashed, weight = 0.3, color = grey]
+2 -> 16 [style = dashed, weight = 0.3, color = grey]
+3 -> 11 [style = dashed, weight = 0.3, color = grey]
+3 -> 13 [style = dashed, weight = 0.3, color = grey]
+3 -> 16 [style = dashed, weight = 0.3, color = grey]
+9 -> 17 [style = dashed, weight = 0.3, color = grey]
 }
