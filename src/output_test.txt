@@ -1,21 +1,50 @@
 0	:	fun fib(n: Int): Int {	type	function
 1	:	a = 0	type	variable
+a
+=
+0
 2	:	b = 1	type	variable
+b
+=
+1
 3	:	c = 0	type	variable
+c
+=
+0
 4	:	n < 2	type	if
 5	:	print (n)	type	default
+print
+(n)
 6	:	} else {	type	else
 7	:	print (2*n)	type	default
+print
+(2*n)
 8	:	}	type	muted
 9	:	i = 1	type	variable
+i
+=
+1
 10	:	i < n	type	while
 11	:	c = a + b	type	default
+c
+=
+a
++
+b
 12	:	c == 10	type	if
 13	:	print(c)	type	default
+print(c)
 14	:	}	type	muted
 15	:	a = b	type	default
+a
+=
+b
 16	:	b = c	type	default
+b
+=
+c
 17	:	i++	type	default
+i++
 18	:	}	type	muted
 19	:	return c	type	return
 20	:	}	type	muted

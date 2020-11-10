@@ -1,17 +1,20 @@
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class DotNode {
-    int rank = 0;
+    int rank;
     int id;
     String bool = "";
     String shape = "rec";
-    String data;
+    String type = "default";
+    String text;
+    ArrayList<String> data = new ArrayList<>();
     LinkedList<DotNode> controlChildren = new LinkedList<>();
     LinkedList<DotNode> dataChildren = new LinkedList<>();
 
-    DotNode(String data, int id, int rank) {
+    DotNode(String text, int id, int rank) {
         this.id = id;
-        this.data = data;
+        this.text = text;
         this.rank = rank;
     }
 
@@ -19,12 +22,16 @@ public class DotNode {
         this.shape = shape;
     }
 
-    public void setRank(int rank) {
-        this.rank = rank;
-    }
-
     public void setBool(String bool) {
         this.bool = bool;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public void removeAllChildren() {
@@ -45,16 +52,25 @@ public class DotNode {
     }
 
     public String printChildren() {
-        StringBuilder str = new StringBuilder("CHILDREN OF " + this.data + " of rank " + this.rank + '\n');
+        StringBuilder str = new StringBuilder("CHILDREN OF " + this.text + " of rank " + this.rank + '\n');
         for (DotNode node : this.getControlChildren()) {
             str.append(node.toString());
         }
         return str.toString();
     }
 
+    public String printData() {
+        StringBuilder str = new StringBuilder();
+        for (String v : data) {
+            str.append(v);
+            str.append('\n');
+        }
+        return str.toString();
+    }
+
     @Override
     public String toString() {
-        return  id + ": " + data + " rank - " + rank + '\n';
+        return  id + "\t:\t" + text + "\ttype\t" + type + '\n';
     }
 }
 
