@@ -4,7 +4,7 @@ public class DotNode {
     int rank = 0;
     int id;
     String bool = "";
-    String type = "rec";
+    String shape = "rec";
     String data;
     LinkedList<DotNode> controlChildren = new LinkedList<>();
     LinkedList<DotNode> dataChildren = new LinkedList<>();
@@ -15,14 +15,8 @@ public class DotNode {
         this.rank = rank;
     }
 
-    DotNode(String data, String type, int id) {
-        this.data = data;
-        this.type = type;
-        this.id = id;
-    }
-
-    public void setType(String type) {
-        this.type = type;
+    public void setShape(String shape) {
+        this.shape = shape;
     }
 
     public void setRank(int rank) {

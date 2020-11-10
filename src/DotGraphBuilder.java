@@ -11,9 +11,9 @@ public class DotGraphBuilder {
             FileWriter writer = new FileWriter(output, false);
             writer.write("digraph G {\n");
             for (DotNode dotNode : dotNodes) {
-                if (!dotNode.data.matches("[}]")) {
+                if (!dotNode.data.matches("[}]") && !dotNode.data.contains("} else {")) {
                     writer.write(dotNode.id +
-                            " [shape=" + dotNode.type +
+                            " [shape=" + dotNode.shape +
                             ", label =\"" + dotNode.data + "\"];\n");
                 }
             }
