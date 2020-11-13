@@ -2,7 +2,6 @@ import java.io.*;
 import java.util.ArrayList;
 
 
-
 public class Lab1 {
     public static void main(String[] args) {
         File input = new File("src/input.txt");
@@ -60,6 +59,10 @@ public class Lab1 {
                     }
                 }
 
+                if (tmp.length > 1 && tmp[1].equals("=")) {
+                    node.setType("setter");
+                }
+
                 dotNodes.add(node);
 
                 if (line.contains("{")) {
@@ -78,8 +81,10 @@ public class Lab1 {
                         && !dotNodes.get(i - 1).text.contains("else")) {
                     if (dotNodes.get(i).rank == dotNodes.get(i - 1).rank) {             // same rank
                         dotNodes.get(i - 1).addControlChild(dotNodes.get(i));
+                        dotNodes.get(i - 1).setRightControlChild(dotNodes.get(i));
                     } else if (dotNodes.get(i).rank > dotNodes.get(i - 1).rank) {       // rank is up => cycle body or true branch
                         dotNodes.get(i - 1).addControlChild(dotNodes.get(i));
+                        dotNodes.get(i - 1).setRightControlChild(dotNodes.get(i));
                         dotNodes.get(i).setBool("True");
                     } else {                                                            // rank is down => after cycle or false branch
                         int j = dotNodes.get(i).id - 1;
@@ -94,9 +99,11 @@ public class Lab1 {
                         }
                         if (!isElse) {
                             dotNodes.get(j).addControlChild(dotNodes.get(i));
+                            dotNodes.get(j).setLeftControlChild(dotNodes.get(i));
                             dotNodes.get(i).setBool("False");
                         } else {
                             dotNodes.get(j).addControlChild(dotNodes.get(elseId + 1));
+                            dotNodes.get(j).setLeftControlChild(dotNodes.get(elseId + 1));
                             dotNodes.get(getLastDataNodeID(dotNodes, elseId - 1))
                                     .addControlChild(dotNodes.get(i));
                             dotNodes.get(getLastDataNodeID(dotNodes, i - 1))
@@ -136,17 +143,33 @@ public class Lab1 {
                     case "if": {
                         String s = dotNodes.get(i).text.substring(4, dotNodes.get(i).text.length() - 3);
                         dotNodes.get(i).setText(s);
+                        String[] tmp = s.split("[\\s+\\-=*/()]+");
+                        for (String v : tmp) {
+                            if (!v.isEmpty() && !v.matches("[0-9]+")) {
+                                dotNodes.get(i).data.add(v);
+                            }
+                        }
                         break;
                     }
                     case "while": {
-//                        String s = dotNodes.get(i).text.replaceAll("(^while\\s\\(|\\)\\s\\{)", "");    // I speak regex
-                        String s = dotNodes.get(i).text.substring(7, dotNodes.get(i).text.length() - 3);
+                        String s = dotNodes.get(i).text.replaceAll("(^while\\s\\(|\\)\\s\\{)", "");    // I speak regex
+//                        String s = dotNodes.get(i).text.substring(7, dotNodes.get(i).text.length() - 3);
                         dotNodes.get(i).setText(s);
+                        break;
+                    }
+                    case "setter": {
+                        String s = dotNodes.get(i).text;
+                        String[] tmp = s.split("[\\s+\\-=*/()]+");
+                        for (String v : tmp) {
+                            if (!v.isEmpty() && !v.matches("[0-9]+")) {
+                                dotNodes.get(i).data.add(v);
+                            }
+                        }
                         break;
                     }
                     case "default": {
                         String s = dotNodes.get(i).text;
-                        String[] tmp = s.split("[\\s+\\-=*/()]+");
+                        String[] tmp = s.split("[\\s+\\-*/()]+");
                         for (String v : tmp) {
                             if (!v.isEmpty() && !v.matches("[0-9]+")) {
                                 dotNodes.get(i).data.add(v);
@@ -157,7 +180,27 @@ public class Lab1 {
                 }
 
 
-                writer.write(dotNodes.get(i).toString());
+
+            }
+
+            for (i = 0; i < dotNodes.size() - 1; i++) {
+                if (dotNodes.get(i).type.matches("variable|setter")) {
+                    String var = dotNodes.get(i).data.get(0);
+                    int j = i + 1;
+                    while (!(dotNodes.get(j).type.equals("setter") && dotNodes.get(j).data.get(0).equals(var))
+                            && j < dotNodes.size() - 1) {
+                        if (dotNodes.get(j).data.contains(var)) {
+                            dotNodes.get(i).addDataChild(dotNodes.get(j));
+                        }
+                        j++;
+                    }
+                }
+            }
+
+            for (DotNode n : dotNodes) {
+                writer.write(n.toString());
+                if (n.rightControlChild != null) writer.write(n.rightControlChild.toString());
+                if (n.leftControlChild != null) writer.write(n.leftControlChild.toString());
             }
 
             writer.flush();

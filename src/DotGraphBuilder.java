@@ -26,7 +26,7 @@ public class DotGraphBuilder {
                             dotNode.rank == 0) {
                         writer.write(dotNode.id + " -> " + child.id + "\n");
                     } else {
-                        writer.write(dotNode.id + " -> " + child.id + "[label = " + child.bool + "]" + "\n");
+                        writer.write(dotNode.id + " -> " + child.id + " [label = " + child.bool + "]" + "\n");
                     }
 
                 }
@@ -46,15 +46,9 @@ public class DotGraphBuilder {
         try {
             FileWriter writer = new FileWriter(output, true);
             for (int i = 0; i < dotNodes.size() - 1; i++) {
-                if (dotNodes.get(i).type.equals("variable")) {
-                    for (int j = i + 1; j < dotNodes.size(); j++) {
-                        for (String d : dotNodes.get(i).data) {
-                            if (dotNodes.get(j).data.contains(d)) {
-                                writer.write(dotNodes.get(i).id + " -> " + dotNodes.get(j).id
-                                    + " [style = dashed, weight = 0.1, color = grey]\n");
-                            }
-                        }
-                    }
+                for (DotNode child : dotNodes.get(i).dataChildren) {
+                    writer.write(dotNodes.get(i).id + " -> " + child.id
+                            + " [style = dashed, weight = 0.1, color = grey]\n");
                 }
             }
             writer.write("}");

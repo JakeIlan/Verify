@@ -3,12 +3,15 @@ import java.util.ArrayList;
 public class DotNode {
     int rank;
     int id;
+    int treeDepth = 0;
     String bool = "";
     String shape = "rec";
     String type = "default";
     String text;
     ArrayList<String> data = new ArrayList<>();
     ArrayList<DotNode> controlChildren = new ArrayList<>();
+    DotNode leftControlChild;
+    DotNode rightControlChild;
     ArrayList<DotNode> dataChildren = new ArrayList<>();
 
     DotNode(String text, int id, int rank) {
@@ -38,6 +41,14 @@ public class DotNode {
         this.dataChildren.clear();
     }
 
+    public void setLeftControlChild(DotNode leftControlChild) {
+        this.leftControlChild = leftControlChild;
+    }
+
+    public void setRightControlChild(DotNode rightControlChild) {
+        this.rightControlChild = rightControlChild;
+    }
+
     public void addControlChild(DotNode controlChild) {
         this.controlChildren.add(controlChild);
     }
@@ -50,11 +61,17 @@ public class DotNode {
         return controlChildren;
     }
 
+    public ArrayList<DotNode> getDataChildren() {
+        return dataChildren;
+    }
+
     public String printChildren() {
-        StringBuilder str = new StringBuilder("CHILDREN OF " + this.text + " of rank " + this.rank + '\n');
-        for (DotNode node : this.getControlChildren()) {
+        StringBuilder str = new StringBuilder("DATA CHILDREN OF " + this.text + " of rank " + this.rank + '\n');
+        for (DotNode node : this.getDataChildren()) {
             str.append(node.toString());
+            str.append('\n');
         }
+        str.append("-----------------\n");
         return str.toString();
     }
 
@@ -81,7 +98,7 @@ public class DotNode {
 
     @Override
     public String toString() {
-        return  id + "\t:\t" + text + "\ttype\t" + type + '\n';
+        return  id + "\t:\t" + text + "\t\ttype\t" + type + '\n';
     }
 }
 
