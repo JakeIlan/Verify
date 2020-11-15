@@ -32,11 +32,17 @@ digraph G {
 15 -> 16
 16 -> 17
 17 -> 10
-1 -> 11 [style = dashed, weight = 0.1, color = grey]
-2 -> 11 [style = dashed, weight = 0.1, color = grey]
-2 -> 15 [style = dashed, weight = 0.1, color = grey]
-9 -> 17 [style = dashed, weight = 0.1, color = grey]
-11 -> 12 [style = dashed, weight = 0.1, color = grey]
-11 -> 13 [style = dashed, weight = 0.1, color = grey]
-11 -> 16 [style = dashed, weight = 0.1, color = grey]
+1 -> 11 [weight = 0.9, color = red]
+2 -> 11 [weight = 0.9, color = red]
+2 -> 15 [weight = 0.9, color = red]
+9 -> 10 [weight = 0.9, color = red]
+9 -> 17 [weight = 0.9, color = red]
+11 -> 12 [weight = 0.9, color = red]
+11 -> 13 [weight = 0.9, color = red]
+11 -> 16 [weight = 0.9, color = red]
+15 -> 11 [weight = 0.9, color = red]
+16 -> 11 [weight = 0.9, color = red]
+16 -> 15 [weight = 0.9, color = red]
+17 -> 10 [weight = 0.9, color = red]
+17 -> 17 [weight = 0.9, color = red]
 }

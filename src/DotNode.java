@@ -3,7 +3,8 @@ import java.util.ArrayList;
 public class DotNode {
     int rank;
     int id;
-    int treeDepth = 0;
+    int subTreeCounter = 0;
+    int treeLevel = 0;
     String bool = "";
     String shape = "rec";
     String type = "default";
@@ -39,6 +40,8 @@ public class DotNode {
     public void removeAllChildren() {
         this.controlChildren.clear();
         this.dataChildren.clear();
+        this.leftControlChild = null;
+        this.rightControlChild = null;
     }
 
     public void setLeftControlChild(DotNode leftControlChild) {
@@ -98,7 +101,7 @@ public class DotNode {
 
     @Override
     public String toString() {
-        return  id + "\t:\t" + text + "\t\ttype\t" + type + '\n';
+        return  id + "\t:\t" + text + "\tlevel :\t" + treeLevel + '\n';
     }
 }
 

@@ -21,14 +21,31 @@ public class DotGraphBuilder {
                 }
             }
             for (DotNode dotNode : dotNodes) {
-                for (DotNode child : dotNode.getControlChildren()) {
-                    if ((!child.bool.equals("True") && !child.bool.equals("False")) ||
+//                for (DotNode child : dotNode.getControlChildren()) {
+//                    if ((!child.bool.equals("True") && !child.bool.equals("False")) ||
+//                            dotNode.rank == 0) {
+//                        writer.write(dotNode.id + " -> " + child.id + "\n");
+//                    } else {
+//                        writer.write(dotNode.id + " -> " + child.id + " [label = " + child.bool + "]" + "\n");
+//                    }
+//                }
+                DotNode right = dotNode.rightControlChild;
+                DotNode left = dotNode.leftControlChild;
+                if (right != null) {
+                    if ((!right.bool.equals("True") && !right.bool.equals("False")) ||
                             dotNode.rank == 0) {
-                        writer.write(dotNode.id + " -> " + child.id + "\n");
+                        writer.write(dotNode.id + " -> " + right.id + "\n");
                     } else {
-                        writer.write(dotNode.id + " -> " + child.id + " [label = " + child.bool + "]" + "\n");
+                        writer.write(dotNode.id + " -> " + right.id + " [label = " + right.bool + "]" + "\n");
                     }
-
+                }
+                if (left != null) {
+                    if ((!left.bool.equals("True") && !left.bool.equals("False")) ||
+                            dotNode.rank == 0) {
+                        writer.write(dotNode.id + " -> " + left.id + "\n");
+                    } else {
+                        writer.write(dotNode.id + " -> " + left.id + " [label = " + left.bool + "]" + "\n");
+                    }
                 }
             }
 
@@ -48,7 +65,7 @@ public class DotGraphBuilder {
             for (int i = 0; i < dotNodes.size() - 1; i++) {
                 for (DotNode child : dotNodes.get(i).dataChildren) {
                     writer.write(dotNodes.get(i).id + " -> " + child.id
-                            + " [style = dashed, weight = 0.1, color = grey]\n");
+                            + " [weight = 0.9, color = red]\n");
                 }
             }
             writer.write("}");

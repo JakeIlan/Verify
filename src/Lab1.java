@@ -80,10 +80,10 @@ public class Lab1 {
                 if (dotNodes.get(i).rank > 0 && !dotNodes.get(i).text.contains("}")
                         && !dotNodes.get(i - 1).text.contains("else")) {
                     if (dotNodes.get(i).rank == dotNodes.get(i - 1).rank) {             // same rank
-                        dotNodes.get(i - 1).addControlChild(dotNodes.get(i));
+//                        dotNodes.get(i - 1).addControlChild(dotNodes.get(i));
                         dotNodes.get(i - 1).setRightControlChild(dotNodes.get(i));
                     } else if (dotNodes.get(i).rank > dotNodes.get(i - 1).rank) {       // rank is up => cycle body or true branch
-                        dotNodes.get(i - 1).addControlChild(dotNodes.get(i));
+//                        dotNodes.get(i - 1).addControlChild(dotNodes.get(i));
                         dotNodes.get(i - 1).setRightControlChild(dotNodes.get(i));
                         dotNodes.get(i).setBool("True");
                     } else {                                                            // rank is down => after cycle or false branch
@@ -98,16 +98,21 @@ public class Lab1 {
                             j--;
                         }
                         if (!isElse) {
-                            dotNodes.get(j).addControlChild(dotNodes.get(i));
+//                            dotNodes.get(j).addControlChild(dotNodes.get(i));
                             dotNodes.get(j).setLeftControlChild(dotNodes.get(i));
                             dotNodes.get(i).setBool("False");
                         } else {
-                            dotNodes.get(j).addControlChild(dotNodes.get(elseId + 1));
+//                            dotNodes.get(j).addControlChild(dotNodes.get(elseId + 1));
                             dotNodes.get(j).setLeftControlChild(dotNodes.get(elseId + 1));
+//                            dotNodes.get(getLastDataNodeID(dotNodes, elseId - 1))
+//                                    .addControlChild(dotNodes.get(i));
                             dotNodes.get(getLastDataNodeID(dotNodes, elseId - 1))
-                                    .addControlChild(dotNodes.get(i));
+                                    .setRightControlChild(dotNodes.get(i));
+
+//                            dotNodes.get(getLastDataNodeID(dotNodes, i - 1))
+//                                    .addControlChild(dotNodes.get(i));
                             dotNodes.get(getLastDataNodeID(dotNodes, i - 1))
-                                    .addControlChild(dotNodes.get(i));
+                                    .setRightControlChild(dotNodes.get(i));
                             dotNodes.get(elseId + 1).setBool("False");
                         }
 
@@ -122,7 +127,7 @@ public class Lab1 {
                         j--;
                     }
                     if (dotNodes.get(j).type.equals("while")) {
-                        dotNodes.get(i).addControlChild(dotNodes.get(j));
+                        dotNodes.get(i).setRightControlChild(dotNodes.get(j));
                     }
                 }
 
@@ -155,9 +160,17 @@ public class Lab1 {
                         String s = dotNodes.get(i).text.replaceAll("(^while\\s\\(|\\)\\s\\{)", "");    // I speak regex
 //                        String s = dotNodes.get(i).text.substring(7, dotNodes.get(i).text.length() - 3);
                         dotNodes.get(i).setText(s);
+                        String[] tmp = s.split("[\\s+\\-=*/()]+");
+                        for (String v : tmp) {
+                            if (!v.isEmpty() && !v.matches("[0-9]+")) {
+                                dotNodes.get(i).data.add(v);
+                            }
+                        }
                         break;
                     }
-                    case "setter": {
+                    case "return":
+                    case "setter":
+                    case "default": {
                         String s = dotNodes.get(i).text;
                         String[] tmp = s.split("[\\s+\\-=*/()]+");
                         for (String v : tmp) {
@@ -167,40 +180,50 @@ public class Lab1 {
                         }
                         break;
                     }
-                    case "default": {
-                        String s = dotNodes.get(i).text;
-                        String[] tmp = s.split("[\\s+\\-*/()]+");
-                        for (String v : tmp) {
-                            if (!v.isEmpty() && !v.matches("[0-9]+")) {
-                                dotNodes.get(i).data.add(v);
+                }
+            }
+
+            for (DotNode node : dotNodes) {
+                if (node.rightControlChild != null) {
+                    node.rightControlChild.treeLevel = node.treeLevel + 1;
+                }
+                if (node.leftControlChild != null) {
+                    node.leftControlChild.treeLevel = node.treeLevel + 1;
+                }
+            }
+
+            ArrayList<DotNode> subTree = new ArrayList<>();
+            for (i = 0; i < dotNodes.size() - 1; i++) {
+                if (dotNodes.get(i).type.matches("variable|setter|default")) {
+                    String var = dotNodes.get(i).data.get(0);
+                    subTree.clear();
+                    for (DotNode n : dotNodes) {
+                        n.subTreeCounter = 0;
+                    }
+                    getControlBranch(dotNodes.get(i), subTree);
+                    for (DotNode n : subTree) {
+                        if (n.data.size() > 0) {
+                            if (n.type.equals("return") && n.data.contains(var)) {
+                                dotNodes.get(i).addDataChild(n);
+                            }
+                            if (n.data.get(0).equals(var) && n.type.equals("setter")) {
+                                break;
+                            } else if (n.data.contains(var) && !var.equals("print")) {
+                                dotNodes.get(i).addDataChild(n);
                             }
                         }
-                        break;
-                    }
-                }
-
-
-
-            }
-
-            for (i = 0; i < dotNodes.size() - 1; i++) {
-                if (dotNodes.get(i).type.matches("variable|setter")) {
-                    String var = dotNodes.get(i).data.get(0);
-                    int j = i + 1;
-                    while (!(dotNodes.get(j).type.equals("setter") && dotNodes.get(j).data.get(0).equals(var))
-                            && j < dotNodes.size() - 1) {
-                        if (dotNodes.get(j).data.contains(var)) {
-                            dotNodes.get(i).addDataChild(dotNodes.get(j));
-                        }
-                        j++;
                     }
                 }
             }
 
+            subTree.clear();
             for (DotNode n : dotNodes) {
-                writer.write(n.toString());
-                if (n.rightControlChild != null) writer.write(n.rightControlChild.toString());
-                if (n.leftControlChild != null) writer.write(n.leftControlChild.toString());
+                n.subTreeCounter = 0;
+            }
+            System.out.println(dotNodes.get(11).toString());
+            getControlBranch(dotNodes.get(11), subTree);
+            for (DotNode n : subTree) {
+                System.out.println(n.toString());
             }
 
             writer.flush();
@@ -208,6 +231,19 @@ public class Lab1 {
             graph.buildDataPath();
         } catch (IOException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    static public void getControlBranch(DotNode node, ArrayList<DotNode> target) {
+        if (node.rightControlChild != null && node.rightControlChild.subTreeCounter == 0) {
+            target.add(node.rightControlChild);
+            node.rightControlChild.subTreeCounter += 1;
+            getControlBranch(node.rightControlChild, target);
+        }
+        if (node.leftControlChild != null && node.leftControlChild.subTreeCounter == 0) {
+            target.add(node.leftControlChild);
+            node.leftControlChild.subTreeCounter += 1;
+            getControlBranch(node.leftControlChild, target);
         }
     }
 
