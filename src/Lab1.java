@@ -184,10 +184,12 @@ public class Lab1 {
             }
 
             for (DotNode node : dotNodes) {
-                if (node.rightControlChild != null) {
+                if (node.rightControlChild != null && node.rightControlChild.id > node.id
+                        && node.rightControlChild.treeLevel <= node.treeLevel) {
                     node.rightControlChild.treeLevel = node.treeLevel + 1;
                 }
-                if (node.leftControlChild != null) {
+                if (node.leftControlChild != null && node.leftControlChild.id > node.id
+                        && node.leftControlChild.treeLevel <= node.treeLevel) {
                     node.leftControlChild.treeLevel = node.treeLevel + 1;
                 }
             }
@@ -197,15 +199,9 @@ public class Lab1 {
                 if (dotNodes.get(i).type.matches("variable|setter|default")) {
                     String var = dotNodes.get(i).data.get(0);
                     subTree.clear();
-                    for (DotNode n : dotNodes) {
-                        n.subTreeCounter = 0;
-                    }
                     getControlBranch(dotNodes.get(i), subTree);
                     for (DotNode n : subTree) {
                         if (n.data.size() > 0) {
-                            if (n.type.equals("return") && n.data.contains(var)) {
-                                dotNodes.get(i).addDataChild(n);
-                            }
                             if (n.data.get(0).equals(var) && n.type.equals("setter")) {
                                 break;
                             } else if (n.data.contains(var) && !var.equals("print")) {
@@ -216,15 +212,15 @@ public class Lab1 {
                 }
             }
 
+            //subtree test
+
             subTree.clear();
-            for (DotNode n : dotNodes) {
-                n.subTreeCounter = 0;
-            }
-            System.out.println(dotNodes.get(11).toString());
-            getControlBranch(dotNodes.get(11), subTree);
+            System.out.println(dotNodes.get(12).toString());
+            getControlBranch(dotNodes.get(12), subTree);
             for (DotNode n : subTree) {
                 System.out.println(n.toString());
             }
+            System.out.println(checkForLevelDuplicate(subTree));
 
             writer.flush();
             DotGraphBuilder graph = new DotGraphBuilder(dotNodes);
@@ -234,15 +230,26 @@ public class Lab1 {
         }
     }
 
+    static public boolean checkForLevelDuplicate(ArrayList<DotNode> subTree) {
+        boolean result = false;
+        for (DotNode node : subTree) {
+            for (DotNode node1 : subTree) {
+                if (node.id != node1.id && node.treeLevel == node1.treeLevel) {
+                    System.out.println(node.id + " " + node1.id);
+                    result = true;
+                }
+            }
+        }
+        return result;
+    }
+
     static public void getControlBranch(DotNode node, ArrayList<DotNode> target) {
-        if (node.rightControlChild != null && node.rightControlChild.subTreeCounter == 0) {
+        if (node.rightControlChild != null && !target.contains(node.rightControlChild)) {
             target.add(node.rightControlChild);
-            node.rightControlChild.subTreeCounter += 1;
             getControlBranch(node.rightControlChild, target);
         }
-        if (node.leftControlChild != null && node.leftControlChild.subTreeCounter == 0) {
+        if (node.leftControlChild != null && !target.contains(node.leftControlChild)) {
             target.add(node.leftControlChild);
-            node.leftControlChild.subTreeCounter += 1;
             getControlBranch(node.leftControlChild, target);
         }
     }

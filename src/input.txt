@@ -4,6 +4,7 @@ fun fib(n: Int): Int {
     var c = 0
     if (n < 2) {
         print(n)
+        print(3*n)
     } else {
         print(2*n)
     }

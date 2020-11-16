@@ -3,7 +3,6 @@ import java.util.ArrayList;
 public class DotNode {
     int rank;
     int id;
-    int subTreeCounter = 0;
     int treeLevel = 0;
     String bool = "";
     String shape = "rec";
@@ -101,7 +100,7 @@ public class DotNode {
 
     @Override
     public String toString() {
-        return  id + "\t:\t" + text + "\tlevel :\t" + treeLevel + '\n';
+        return  id + "\t:\t" + text + '\n';
     }
 }
 

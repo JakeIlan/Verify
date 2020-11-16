@@ -17,7 +17,7 @@ public class DotGraphBuilder {
                 if (!dotNode.text.matches("[}]") && !dotNode.text.contains("} else {")) {
                     writer.write(dotNode.id +
                             " [shape=" + dotNode.shape +
-                            ", label =\"" + dotNode.text + "\"];\n");
+                            ", label =\"" + dotNode.text + "  L:  " + dotNode.treeLevel + "\"];\n");
                 }
             }
             for (DotNode dotNode : dotNodes) {
@@ -58,7 +58,6 @@ public class DotGraphBuilder {
     }
 
     public void buildDataPath() {
-        System.out.println("DATA PATH: WORK IN PROGRESS");
         File output = new File("src/output_dot.txt");
         try {
             FileWriter writer = new FileWriter(output, true);
