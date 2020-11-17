@@ -53,7 +53,7 @@ public class DotGraphBuilder {
             for (int i = 0; i < dotNodes.size() - 1; i++) {
                 for (DotNode child : dotNodes.get(i).dataChildren) {
                     writer.write(dotNodes.get(i).id + " -> " + child.id
-                            + " [color = red]\n");
+                            + " [weight = 0, color = red]\n");
                 }
             }
             writer.write("}");

@@ -1,65 +1,30 @@
 digraph G {
-0 [shape=rec, label ="fib(n: Int)"];
-1 [shape=rec, label ="a = 0"];
-2 [shape=rec, label ="b = 1"];
-3 [shape=rec, label ="c = 0"];
-4 [shape=diamond, label ="n < 2"];
-5 [shape=rec, label ="print(n)"];
-6 [shape=diamond, label ="a == b"];
-7 [shape=rec, label ="return c"];
-8 [shape=rec, label ="print(c)"];
-10 [shape=rec, label ="print(2*n)"];
-11 [shape=rec, label ="i = 1"];
-12 [shape=diamond, label ="i < n"];
-13 [shape=rec, label ="c = a + b"];
-14 [shape=diamond, label ="c == 10"];
-15 [shape=rec, label ="print(c)"];
-16 [shape=rec, label ="a = b"];
-17 [shape=rec, label ="b = c"];
-18 [shape=rec, label ="i++"];
-19 [shape=rec, label ="return c"];
+0 [shape=rec, label ="test(a: Int, b: Int)"];
+1 [shape=rec, label ="c = 0"];
+2 [shape=rec, label ="c = a - b"];
+3 [shape=diamond, label ="c > 0"];
+4 [shape=rec, label ="print(a)"];
+5 [shape=rec, label ="return a"];
+7 [shape=rec, label ="print(b)"];
+8 [shape=diamond, label ="c == 0"];
+9 [shape=rec, label ="print (c)"];
+10 [shape=rec, label ="return c"];
+11 [shape=rec, label ="return b"];
 0 -> 1
 1 -> 2
 2 -> 3
-3 -> 4
-4 -> 5 [label = True]
-4 -> 10 [label = False]
-5 -> 6
-6 -> 7 [label = True]
-6 -> 8 [label = False]
-8 -> 11
-10 -> 11
-11 -> 12
-12 -> 13 [label = True]
-12 -> 19 [label = False]
-13 -> 14
-14 -> 15 [label = True]
-14 -> 16 [label = False]
-15 -> 16
-16 -> 17
-17 -> 18
-18 -> 12
-0 -> 4 [color = red]
-0 -> 10 [color = red]
-0 -> 12 [color = red]
-0 -> 5 [color = red]
-1 -> 13 [color = red]
-1 -> 6 [color = red]
-2 -> 13 [color = red]
-2 -> 16 [color = red]
-2 -> 6 [color = red]
-3 -> 19 [color = red]
-3 -> 8 [color = red]
-3 -> 7 [color = red]
-11 -> 12 [color = red]
-11 -> 18 [color = red]
-13 -> 14 [color = red]
-13 -> 17 [color = red]
-13 -> 19 [color = red]
-13 -> 15 [color = red]
-16 -> 13 [color = red]
-17 -> 13 [color = red]
-17 -> 16 [color = red]
-18 -> 12 [color = red]
-18 -> 18 [color = red]
+3 -> 4 [label = True]
+3 -> 7 [label = False]
+4 -> 5
+7 -> 8
+8 -> 9 [label = True]
+8 -> 11 [label = False]
+9 -> 10
+0 -> 2 [weight = 0, color = red]
+0 -> 4 [weight = 0, color = red]
+0 -> 5 [weight = 0, color = red]
+2 -> 3 [weight = 0, color = red]
+2 -> 8 [weight = 0, color = red]
+2 -> 9 [weight = 0, color = red]
+2 -> 10 [weight = 0, color = red]
 }

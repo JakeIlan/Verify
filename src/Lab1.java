@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 public class Lab1 {
     public static void main(String[] args) {
-        File input = new File("src/input.txt");
+        File input = new File("src/input1.txt");
         File output = new File("src/output.txt");
-
+        //TODO: 'FOR' CYCLE
         try {
             FileWriter writer = new FileWriter(output, false);
             FileReader fr = new FileReader(input);
@@ -163,7 +163,7 @@ public class Lab1 {
                         String s = node.text.replaceAll("^fun\\s|:\\s[A-Za-z]+\\s\\{","");
                         node.setText(s);
                         s = s.replaceAll("^[A-Za-z]+\\(|\\)$", "");
-                        String[] tmp = s.split(":\\s[A-Za-z]+");
+                        String[] tmp = s.split(":\\s[A-Za-z]+|,|\\s");
                         for (String v : tmp) {
                             if (!v.isEmpty()) {
                                 node.data.add(v);
