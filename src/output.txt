@@ -1,0 +1,20 @@
+0	:	fun fib(n: Int): Int {	rank:	0 function
+1	:	a = 0	rank:	1 variable
+2	:	b = 1	rank:	1 variable
+3	:	c = 0	rank:	1 variable
+4	:	n < 2	rank:	1 if
+5	:	print(n)	rank:	2 default
+6	:	a == b	rank:	2 if
+7	:	return c	rank:	3 return
+8	:	print(b)	rank:	2 default
+9	:	else {	rank:	1 else
+10	:	print(2*n)	rank:	2 default
+11	:	i = 1	rank:	1 variable
+12	:	i < n	rank:	1 while
+13	:	c = a + b	rank:	2 setter
+14	:	c == 10	rank:	2 if
+15	:	print(c)	rank:	3 default
+16	:	a = b	rank:	2 setter
+17	:	b = c	rank:	2 setter
+18	:	i++	rank:	2 default
+19	:	return c	rank:	1 return

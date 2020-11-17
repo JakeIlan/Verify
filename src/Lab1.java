@@ -16,6 +16,11 @@ public class Lab1 {
             int i = 0;
             int rank = 0;
             while (line != null) {
+
+                if (line.contains("}")) {
+                    rank--;
+                }
+                line = line.replaceFirst("}", "");
                 line = line.trim();
                 if (line.isEmpty()) {
                     line = reader.readLine();
@@ -47,14 +52,8 @@ public class Lab1 {
                         node.setType("return");
                         break;
                     }
-                    case "}": {
-                        if (tmp.length > 1) {
-                            if (tmp[1].equals("else")) {
-                                node.setType("else");
-                            }
-                        } else {
-                            node.setType("muted");
-                        }
+                    case "else": {
+                        node.setType("else");
                         break;
                     }
                 }
@@ -68,60 +67,97 @@ public class Lab1 {
                 if (line.contains("{")) {
                     rank++;
                 }
-                if (line.contains("}")) {
-                    rank--;
-                }
 
                 line = reader.readLine();
                 i++;
             }
 
-            for (i = 0; i < dotNodes.size(); i++) {
-                if (dotNodes.get(i).rank > 0 && !dotNodes.get(i).text.contains("}")
-                        && !dotNodes.get(i - 1).text.contains("else")) {
-                    if (dotNodes.get(i).rank == dotNodes.get(i - 1).rank) {             // same rank
-//                        dotNodes.get(i - 1).addControlChild(dotNodes.get(i));
-                        dotNodes.get(i - 1).setRightControlChild(dotNodes.get(i));
-                    } else if (dotNodes.get(i).rank > dotNodes.get(i - 1).rank) {       // rank is up => cycle body or true branch
-//                        dotNodes.get(i - 1).addControlChild(dotNodes.get(i));
-                        dotNodes.get(i - 1).setRightControlChild(dotNodes.get(i));
-                        dotNodes.get(i).setBool("True");
-                    } else {                                                            // rank is down => after cycle or false branch
-                        int j = dotNodes.get(i).id - 1;
-                        boolean isElse = false;
-                        int elseId = 0;
-                        while (dotNodes.get(i).rank != dotNodes.get(j).rank) {
-                            if (dotNodes.get(j).text.contains("else")) {
-                                isElse = true;
-                                elseId = j;
-                            }
+            for (i = 0; i < dotNodes.size() - 1; i++) {
+//                if (!dotNodes.get(i - 1).text.contains("else")) {
+//                    if (dotNodes.get(i).rank == dotNodes.get(i - 1).rank) {             // same rank
+//                        dotNodes.get(i - 1).setRightControlChild(dotNodes.get(i));
+//                    } else if (dotNodes.get(i).rank > dotNodes.get(i - 1).rank) {       // rank is up => cycle body or true branch
+//                        dotNodes.get(i - 1).setRightControlChild(dotNodes.get(i));
+//                        if (dotNodes.get(i - 1).rank > 0) dotNodes.get(i).setBool("True");
+//                    } else {                                                            // rank is down => after cycle or false branch
+//                        int j = dotNodes.get(i).id - 1;
+//                        boolean isElse = false;
+//                        int elseId = 0;
+//                        while (dotNodes.get(i).rank != dotNodes.get(j).rank) {
+//                            if (dotNodes.get(j).text.contains("else")) {
+//                                isElse = true;
+//                                elseId = j;
+//                            }
+//                            j--;
+//                        }
+//                        if (!isElse) {
+//                            dotNodes.get(j).setLeftControlChild(dotNodes.get(i));
+//                            dotNodes.get(i).setBool("False");
+//                            dotNodes.get(getLastDataNodeID(dotNodes, i - 1))
+//                                    .setRightControlChild(dotNodes.get(i));
+//                        } else {
+//                            dotNodes.get(j).setLeftControlChild(dotNodes.get(elseId + 1));
+//                            dotNodes.get(getLastDataNodeID(dotNodes, elseId - 1))
+//                                    .setRightControlChild(dotNodes.get(i));
+//
+//                            dotNodes.get(getLastDataNodeID(dotNodes, i - 1))
+//                                    .setRightControlChild(dotNodes.get(i));
+//                            dotNodes.get(elseId + 1).setBool("False");
+//                        }
+//
+//                    }
+//                }
+                if (dotNodes.get(i).rank == dotNodes.get(i + 1).rank) {
+                    dotNodes.get(i).setRightControlChild(dotNodes.get(i + 1));
+                }
+                if (dotNodes.get(i).rank < dotNodes.get(i + 1).rank) {
+                    if (dotNodes.get(i).type.equals("function")) {
+                        dotNodes.get(i).setRightControlChild(dotNodes.get(i + 1));
+                    }
+                    if (dotNodes.get(i).type.matches("while|if")) {
+                        dotNodes.get(i).setRightControlChild(dotNodes.get(i + 1));
+                        dotNodes.get(i + 1).setBool("True");
+                    }
+                    if (dotNodes.get(i).type.equals("else")) {
+                        int j = i - 1;
+                        while (!(dotNodes.get(j).rank == dotNodes.get(i).rank && dotNodes.get(j).type.equals("if")) && j > 0) {
                             j--;
                         }
-                        if (!isElse) {
-//                            dotNodes.get(j).addControlChild(dotNodes.get(i));
-                            dotNodes.get(j).setLeftControlChild(dotNodes.get(i));
-                            dotNodes.get(i).setBool("False");
-                        } else {
-//                            dotNodes.get(j).addControlChild(dotNodes.get(elseId + 1));
-                            dotNodes.get(j).setLeftControlChild(dotNodes.get(elseId + 1));
-//                            dotNodes.get(getLastDataNodeID(dotNodes, elseId - 1))
-//                                    .addControlChild(dotNodes.get(i));
-                            dotNodes.get(getLastDataNodeID(dotNodes, elseId - 1))
-                                    .setRightControlChild(dotNodes.get(i));
-
-//                            dotNodes.get(getLastDataNodeID(dotNodes, i - 1))
-//                                    .addControlChild(dotNodes.get(i));
-                            dotNodes.get(getLastDataNodeID(dotNodes, i - 1))
-                                    .setRightControlChild(dotNodes.get(i));
-                            dotNodes.get(elseId + 1).setBool("False");
-                        }
+                        dotNodes.get(j).setLeftControlChild(dotNodes.get(i + 1));
+                        dotNodes.get(i + 1).setBool("False");
 
                     }
                 }
+                if (dotNodes.get(i).rank > dotNodes.get(i + 1).rank) {
+                    if (dotNodes.get(i + 1).type.equals("else")) {
+                        int j = i + 2;
+                        while (dotNodes.get(j).rank > dotNodes.get(i + 1).rank) {
+                            j++;
+                        }
+                        dotNodes.get(i).setRightControlChild(dotNodes.get(j));
+                    } else {
+                        int j = i - 1;
+                        while (!(dotNodes.get(j).rank == dotNodes.get(i + 1).rank && dotNodes.get(j).type.matches("if|while")) && j > 0) {
+                            if (dotNodes.get(j).type.equals("if") && dotNodes.get(j).leftControlChild == null) {
+                                dotNodes.get(j).setLeftControlChild(dotNodes.get(i + 1));
+                                dotNodes.get(i + 1).setBool("False");
+                            }
+                            j--;
+                        }
+                        if (dotNodes.get(j).leftControlChild == null) {
+                            dotNodes.get(j).setLeftControlChild(dotNodes.get(i + 1));
+                            dotNodes.get(i + 1).setBool("False");
+                        }
+                        dotNodes.get(i).setRightControlChild(dotNodes.get(i + 1));
+
+                    }
+
+                }
+
                 if (dotNodes.get(i).type.equals("return")) {                          //trim any paths after return
                     dotNodes.get(i).removeAllChildren();
                 }
-                if (dotNodes.get(i).rank > 1 && dotNodes.get(i + 1).text.contains("}")) {       //while back-loop
+                if (dotNodes.get(i).rank > dotNodes.get(i + 1).rank) {       //while back-loop
                     int j = dotNodes.get(i).id - 1;
                     while (dotNodes.get(i).rank != dotNodes.get(j).rank + 1) {
                         j--;
@@ -183,44 +219,28 @@ public class Lab1 {
                 }
             }
 
-            for (DotNode node : dotNodes) {
-                if (node.rightControlChild != null && node.rightControlChild.id > node.id
-                        && node.rightControlChild.treeLevel <= node.treeLevel) {
-                    node.rightControlChild.treeLevel = node.treeLevel + 1;
-                }
-                if (node.leftControlChild != null && node.leftControlChild.id > node.id
-                        && node.leftControlChild.treeLevel <= node.treeLevel) {
-                    node.leftControlChild.treeLevel = node.treeLevel + 1;
-                }
-            }
-
             ArrayList<DotNode> subTree = new ArrayList<>();
             for (i = 0; i < dotNodes.size() - 1; i++) {
                 if (dotNodes.get(i).type.matches("variable|setter|default")) {
-                    String var = dotNodes.get(i).data.get(0);
+//                    String var = dotNodes.get(i).data.get(0);
                     subTree.clear();
-                    getControlBranch(dotNodes.get(i), subTree);
-                    for (DotNode n : subTree) {
-                        if (n.data.size() > 0) {
-                            if (n.data.get(0).equals(var) && n.type.equals("setter")) {
-                                break;
-                            } else if (n.data.contains(var) && !var.equals("print")) {
-                                dotNodes.get(i).addDataChild(n);
-                            }
-                        }
-                    }
+//                    getControlBranch(dotNodes.get(i), subTree);
+//                    for (DotNode n : subTree) {
+//                        if (n.data.get(0).equals(var) && n.type.equals("setter")) {
+//                            break;
+//                        } else if (n.data.contains(var) && !var.equals("print")) {
+//                            if (!dotNodes.get(i).dataChildren.contains(n)) dotNodes.get(i).addDataChild(n);
+//                        }
+//                    }
+                    traceData(dotNodes.get(i), subTree, dotNodes.get(i));
                 }
             }
 
-            //subtree test
-
-            subTree.clear();
-            System.out.println(dotNodes.get(12).toString());
-            getControlBranch(dotNodes.get(12), subTree);
-            for (DotNode n : subTree) {
-                System.out.println(n.toString());
+            for (DotNode n : dotNodes) {
+                writer.write(n.toString());
+//                if (n.rightControlChild != null) writer.write("Right: " + n.rightControlChild.toString());
+//                if (n.leftControlChild != null) writer.write("Left: " + n.leftControlChild.toString());
             }
-            System.out.println(checkForLevelDuplicate(subTree));
 
             writer.flush();
             DotGraphBuilder graph = new DotGraphBuilder(dotNodes);
@@ -230,40 +250,31 @@ public class Lab1 {
         }
     }
 
-    static public boolean checkForLevelDuplicate(ArrayList<DotNode> subTree) {
-        boolean result = false;
-        for (DotNode node : subTree) {
-            for (DotNode node1 : subTree) {
-                if (node.id != node1.id && node.treeLevel == node1.treeLevel) {
-                    System.out.println(node.id + " " + node1.id);
-                    result = true;
+    static private void traceData(DotNode node, ArrayList<DotNode> storage, DotNode base) {
+        if (node.rightControlChild != null && !storage.contains(node.rightControlChild)
+                && !node.rightControlChild.type.matches("muted|else")) {
+            storage.add(node.rightControlChild);
+            if (!(node.rightControlChild.type.equals("setter") && node.rightControlChild.data.get(0).equals(base.data.get(0)))) {
+                if (node.rightControlChild.data.size() > 0) {
+                    if (node.rightControlChild.data.contains(base.data.get(0)) && !base.data.get(0).equals("print")) {
+                        base.addDataChild(node.rightControlChild);
+                    }
                 }
+                traceData(node.rightControlChild, storage, base);
             }
         }
-        return result;
-    }
-
-    static public void getControlBranch(DotNode node, ArrayList<DotNode> target) {
-        if (node.rightControlChild != null && !target.contains(node.rightControlChild)) {
-            target.add(node.rightControlChild);
-            getControlBranch(node.rightControlChild, target);
-        }
-        if (node.leftControlChild != null && !target.contains(node.leftControlChild)) {
-            target.add(node.leftControlChild);
-            getControlBranch(node.leftControlChild, target);
-        }
-    }
-
-    static public int getLastDataNodeID(ArrayList<DotNode> dotNodes, int id) {
-        int res = 0;
-        if (id == 0) return res;
-        int i = id;
-        while (dotNodes.get(i).rank == dotNodes.get(id).rank) {
-            if (!dotNodes.get(i).text.contains("}")) {
-                return i;
+        if (node.leftControlChild != null && !storage.contains(node.leftControlChild)
+                && !node.leftControlChild.type.matches("muted|else")) {
+            storage.add(node.leftControlChild);
+            if (!(node.leftControlChild.type.equals("setter") && node.leftControlChild.data.get(0).equals(base.data.get(0)))) {
+                if (node.leftControlChild.data.size() > 0) {
+                    if (node.leftControlChild.data.contains(base.data.get(0)) && !base.data.get(0).equals("print")) {
+                        base.addDataChild(node.leftControlChild);
+                    }
+                }
+                traceData(node.leftControlChild, storage, base);
             }
-            i--;
         }
-        return res;
     }
+
 }

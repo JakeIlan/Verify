@@ -3,13 +3,11 @@ import java.util.ArrayList;
 public class DotNode {
     int rank;
     int id;
-    int treeLevel = 0;
     String bool = "";
     String shape = "rec";
     String type = "default";
     String text;
     ArrayList<String> data = new ArrayList<>();
-    ArrayList<DotNode> controlChildren = new ArrayList<>();
     DotNode leftControlChild;
     DotNode rightControlChild;
     ArrayList<DotNode> dataChildren = new ArrayList<>();
@@ -37,7 +35,6 @@ public class DotNode {
     }
 
     public void removeAllChildren() {
-        this.controlChildren.clear();
         this.dataChildren.clear();
         this.leftControlChild = null;
         this.rightControlChild = null;
@@ -51,16 +48,8 @@ public class DotNode {
         this.rightControlChild = rightControlChild;
     }
 
-    public void addControlChild(DotNode controlChild) {
-        this.controlChildren.add(controlChild);
-    }
-
     public void addDataChild(DotNode dataChild) {
         this.dataChildren.add(dataChild);
-    }
-
-    public ArrayList<DotNode> getControlChildren() {
-        return controlChildren;
     }
 
     public ArrayList<DotNode> getDataChildren() {
@@ -86,21 +75,9 @@ public class DotNode {
         return str.toString();
     }
 
-//    public ArrayList<DotNode> getChildTree(DotNode node) {
-//        ArrayList<DotNode> res = new ArrayList<>();
-//        for (DotNode child : node.getControlChildren()) {
-//            if (!res.contains(child)) {
-//                res.add(child);
-//            }
-//
-//        }
-//
-//        return res;
-//    }
-
     @Override
     public String toString() {
-        return  id + "\t:\t" + text + '\n';
+        return id + "\t:\t" + text + "\trank:\t" + rank + " " + type + '\n';
     }
 }
 

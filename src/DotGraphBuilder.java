@@ -14,41 +14,30 @@ public class DotGraphBuilder {
             FileWriter writer = new FileWriter(output, false);
             writer.write("digraph G {\n");
             for (DotNode dotNode : dotNodes) {
-                if (!dotNode.text.matches("[}]") && !dotNode.text.contains("} else {")) {
+                if (!dotNode.text.contains("else {")) {
                     writer.write(dotNode.id +
                             " [shape=" + dotNode.shape +
-                            ", label =\"" + dotNode.text + "  L:  " + dotNode.treeLevel + "\"];\n");
+                            ", label =\"" + dotNode.text + "\"];\n");
                 }
             }
             for (DotNode dotNode : dotNodes) {
-//                for (DotNode child : dotNode.getControlChildren()) {
-//                    if ((!child.bool.equals("True") && !child.bool.equals("False")) ||
-//                            dotNode.rank == 0) {
-//                        writer.write(dotNode.id + " -> " + child.id + "\n");
-//                    } else {
-//                        writer.write(dotNode.id + " -> " + child.id + " [label = " + child.bool + "]" + "\n");
-//                    }
-//                }
                 DotNode right = dotNode.rightControlChild;
                 DotNode left = dotNode.leftControlChild;
                 if (right != null) {
-                    if ((!right.bool.equals("True") && !right.bool.equals("False")) ||
-                            dotNode.rank == 0) {
+                    if (!right.bool.equals("True")) {
                         writer.write(dotNode.id + " -> " + right.id + "\n");
                     } else {
                         writer.write(dotNode.id + " -> " + right.id + " [label = " + right.bool + "]" + "\n");
                     }
                 }
                 if (left != null) {
-                    if ((!left.bool.equals("True") && !left.bool.equals("False")) ||
-                            dotNode.rank == 0) {
+                    if (!left.bool.equals("False")) {
                         writer.write(dotNode.id + " -> " + left.id + "\n");
                     } else {
                         writer.write(dotNode.id + " -> " + left.id + " [label = " + left.bool + "]" + "\n");
                     }
                 }
             }
-
             writer.flush();
         } catch (IOException e) {
             System.out.println(e.getMessage());
