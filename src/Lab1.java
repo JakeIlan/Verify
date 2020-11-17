@@ -1,12 +1,12 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class Lab1 {
     public static void main(String[] args) {
-        File input = new File("src/input2.txt");
+        File input = new File("src/input3.txt");
         File output = new File("src/output.txt");
-        //TODO: 'FOR' CYCLE
         try {
             FileWriter writer = new FileWriter(output, false);
             FileReader fr = new FileReader(input);
@@ -36,10 +36,16 @@ public class Lab1 {
                         break;
                     }
                     case "while": {
-                        node.setShape("diamond");
+                        node.setShape("oval");
                         node.setType("while");
                         break;
                     }
+                    case "for": {
+                        node.setShape("oval");
+                        node.setType("for");
+                        break;
+                    }
+                    case "val":
                     case "var": {
                         node.setType("variable");
                         break;
@@ -80,7 +86,7 @@ public class Lab1 {
                     if (dotNodes.get(i - 1).type.equals("function")) {
                         dotNodes.get(i - 1).setRightControlChild(dotNodes.get(i));
                     }
-                    if (dotNodes.get(i - 1).type.matches("while|if")) {
+                    if (dotNodes.get(i - 1).type.matches("while|if|for")) {
                         dotNodes.get(i - 1).setRightControlChild(dotNodes.get(i));
                         dotNodes.get(i).setBool("True");
                     }
@@ -103,7 +109,7 @@ public class Lab1 {
                         dotNodes.get(i - 1).setRightControlChild(dotNodes.get(j));
                     } else {
                         int j = i - 2;
-                        while (!(dotNodes.get(j).rank == dotNodes.get(i).rank && dotNodes.get(j).type.matches("if|while")) && j > 0) {
+                        while (!(dotNodes.get(j).rank == dotNodes.get(i).rank && dotNodes.get(j).type.matches("if|while|for")) && j > 0) {
                             if (dotNodes.get(j).type.equals("if") && dotNodes.get(j).leftControlChild == null) {
                                 dotNodes.get(j).setLeftControlChild(dotNodes.get(i));
                                 dotNodes.get(i).setBool("False");
@@ -125,7 +131,7 @@ public class Lab1 {
                     while (dotNodes.get(i - 1).rank != dotNodes.get(j).rank + 1) {
                         j--;
                     }
-                    if (dotNodes.get(j).type.equals("while")) {
+                    if (dotNodes.get(j).type.matches("while|for")) {
                         dotNodes.get(i - 1).setRightControlChild(dotNodes.get(j));
                     }
                 }
@@ -137,7 +143,7 @@ public class Lab1 {
                 // Parsing data into the node and rearranging it's text
                 switch (node.type) {
                     case "variable": {
-                        String s = node.text.replaceAll("^var ", "");
+                        String s = node.text.replaceAll("^var\\s|^val\\s", "");
                         node.setText(s);
                         String[] tmp = s.split("[\\s+\\-=*/()]+");
                         for (String v : tmp) {
@@ -149,7 +155,7 @@ public class Lab1 {
                         break;
                     }
                     case "if": {
-                        String s = node.text.substring(4, node.text.length() - 3);
+                        String s = node.text.replaceAll("^if\\s\\(|\\)\\s\\{", "");
                         node.setText(s);
                         String[] tmp = s.split("[\\s+\\-=*/()]+");
                         for (String v : tmp) {
@@ -160,7 +166,7 @@ public class Lab1 {
                         break;
                     }
                     case "function": {
-                        String s = node.text.replaceAll("^fun\\s|:\\s[A-Za-z]+\\s\\{","");
+                        String s = node.text.replaceAll("^fun\\s|:\\s[A-Za-z]+\\s\\{", "");
                         node.setText(s);
                         s = s.replaceAll("^[A-Za-z]+\\(|\\)$", "");
                         String[] tmp = s.split(":\\s[A-Za-z]+|,|\\s");
@@ -174,7 +180,6 @@ public class Lab1 {
                     }
                     case "while": {
                         String s = node.text.replaceAll("(^while\\s\\(|\\)\\s\\{)", "");    // I speak regex
-//                        String s = dotNodes.get(i).text.substring(7, dotNodes.get(i).text.length() - 3);
                         node.setText(s);
                         String[] tmp = s.split("[\\s+\\-=*/()]+");
                         for (String v : tmp) {
@@ -184,6 +189,19 @@ public class Lab1 {
                         }
                         break;
                     }
+                    case "for": {
+                        String s = node.text.replaceAll("(^for\\s\\(|\\)\\s\\{)", "");    // I speak regex
+                        node.setText(s);
+                        String[] tmp = s.split("[\\s+\\-=*/()]+");
+                        for (i = 0; i < tmp.length; i++) {
+                            if (!tmp[i].isEmpty() && !tmp[i].matches("[0-9]+\\.{2}[0-9]+")) {
+                                if (i != 1 || !tmp[i].equals("in"))
+                                    node.data.add(tmp[i]);
+                            }
+                        }
+                        break;
+                    }
+
                     case "return":
                     case "setter":
                     case "default": {
@@ -208,7 +226,7 @@ public class Lab1 {
                 if (dotNodes.get(i).type.matches("variable|setter|default")) {
                     subTree.clear();
                     traceData(dotNodes.get(i), subTree, dotNodes.get(i), dotNodes.get(i).data.get(0));
-                } else if (dotNodes.get(i).type.equals("function")) {
+                } else if (dotNodes.get(i).type.matches("function|for")) {
                     for (String var : dotNodes.get(i).data) {
                         subTree.clear();
                         traceData(dotNodes.get(i), subTree, dotNodes.get(i), var);
@@ -222,11 +240,26 @@ public class Lab1 {
 //                if (n.leftControlChild != null) writer.write("Left: " + n.leftControlChild.toString());
             }
 
+            subTree.clear();
+            subTree.add(dotNodes.get(0));
+            getControlBranch(dotNodes.get(0), subTree);
+
             writer.flush();
-            DotGraphBuilder graph = new DotGraphBuilder(dotNodes);
+            DotGraphBuilder graph = new DotGraphBuilder(subTree);
             graph.buildDataPath();
         } catch (IOException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    static public void getControlBranch(DotNode node, ArrayList<DotNode> target) {
+        if (node.rightControlChild != null && !target.contains(node.rightControlChild)) {
+            target.add(node.rightControlChild);
+            getControlBranch(node.rightControlChild, target);
+        }
+        if (node.leftControlChild != null && !target.contains(node.leftControlChild)) {
+            target.add(node.leftControlChild);
+            getControlBranch(node.leftControlChild, target);
         }
     }
 
@@ -241,6 +274,14 @@ public class Lab1 {
                     }
                 }
                 traceData(node.leftControlChild, storage, base, var);
+            } else {
+                if (node.leftControlChild.data.size() > 1) {
+                    for (int i = 1; i < node.leftControlChild.data.size(); i++) {
+                        if (node.leftControlChild.data.get(i).equals(var) && !base.dataChildren.contains(node.leftControlChild)) {
+                            base.addDataChild(node.leftControlChild);
+                        }
+                    }
+                }
             }
         }
         if (node.rightControlChild != null && !storage.contains(node.rightControlChild)
@@ -253,6 +294,14 @@ public class Lab1 {
                     }
                 }
                 traceData(node.rightControlChild, storage, base, var);
+            } else {
+                if (node.rightControlChild.data.size() > 1) {
+                    for (int i = 1; i < node.rightControlChild.data.size(); i++) {
+                        if (node.rightControlChild.data.get(i).equals(var) && !base.dataChildren.contains(node.rightControlChild)) {
+                            base.addDataChild(node.rightControlChild);
+                        }
+                    }
+                }
             }
         }
     }

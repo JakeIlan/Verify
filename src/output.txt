@@ -3,31 +3,12 @@ a
 b
 1	:	c = 0	rank:	1 variable
 c
-2	:	c = a - b	rank:	1 setter
+2	:	i in 0..10	rank:	1 for
+i
+3	:	c = c + i	rank:	2 setter
 c
-a
-b
-3	:	c > 0	rank:	1 if
 c
->
-4	:	print(a)	rank:	2 default
-print
-a
-5	:	return a	rank:	2 return
-return
-a
-6	:	else {	rank:	1 else
-7	:	print(b)	rank:	2 default
-print
-b
-8	:	return b	rank:	2 return
-return
-b
-9	:	c == 0	rank:	1 if
-c
-10	:	print (c)	rank:	2 default
-print
-c
-11	:	return c	rank:	2 return
+i
+4	:	return c	rank:	1 return
 return
 c

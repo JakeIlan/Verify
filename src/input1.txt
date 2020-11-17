@@ -1,5 +1,6 @@
 fun test(a: Int, b: Int): Int {
     var c = 0
+    val d = 10
     c = a - b
     if (c > 0) {
         print(a)
@@ -10,6 +11,9 @@ fun test(a: Int, b: Int): Int {
     if (c == 0) {
         print (c)
         return c
+        if (c == 10) {
+            return d
+        }
     }
     return b
 }

@@ -1,0 +1,7 @@
+fun test(a: Int, b: Int): Int {
+    var c = 0
+    for (i in 0..10) {
+        c = c + i
+    }
+    return c
+}
