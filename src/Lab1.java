@@ -72,7 +72,7 @@ public class Lab1 {
                 i++;
             }
 
-            for (i = 0; i < dotNodes.size() - 1; i++) {
+            for (i = 0; i < dotNodes.size(); i++) {
 //                if (!dotNodes.get(i - 1).text.contains("else")) {
 //                    if (dotNodes.get(i).rank == dotNodes.get(i - 1).rank) {             // same rank
 //                        dotNodes.get(i - 1).setRightControlChild(dotNodes.get(i));
@@ -251,18 +251,6 @@ public class Lab1 {
     }
 
     static private void traceData(DotNode node, ArrayList<DotNode> storage, DotNode base) {
-        if (node.rightControlChild != null && !storage.contains(node.rightControlChild)
-                && !node.rightControlChild.type.matches("muted|else")) {
-            storage.add(node.rightControlChild);
-            if (!(node.rightControlChild.type.equals("setter") && node.rightControlChild.data.get(0).equals(base.data.get(0)))) {
-                if (node.rightControlChild.data.size() > 0) {
-                    if (node.rightControlChild.data.contains(base.data.get(0)) && !base.data.get(0).equals("print")) {
-                        base.addDataChild(node.rightControlChild);
-                    }
-                }
-                traceData(node.rightControlChild, storage, base);
-            }
-        }
         if (node.leftControlChild != null && !storage.contains(node.leftControlChild)
                 && !node.leftControlChild.type.matches("muted|else")) {
             storage.add(node.leftControlChild);
@@ -273,6 +261,18 @@ public class Lab1 {
                     }
                 }
                 traceData(node.leftControlChild, storage, base);
+            }
+        }
+        if (node.rightControlChild != null && !storage.contains(node.rightControlChild)
+                && !node.rightControlChild.type.matches("muted|else")) {
+            storage.add(node.rightControlChild);
+            if (!(node.rightControlChild.type.equals("setter") && node.rightControlChild.data.get(0).equals(base.data.get(0)))) {
+                if (node.rightControlChild.data.size() > 0) {
+                    if (node.rightControlChild.data.contains(base.data.get(0)) && !base.data.get(0).equals("print")) {
+                        base.addDataChild(node.rightControlChild);
+                    }
+                }
+                traceData(node.rightControlChild, storage, base);
             }
         }
     }

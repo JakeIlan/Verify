@@ -7,7 +7,7 @@ fun fib(n: Int): Int {
         if (a == b) {
             return c
         }
-        print(b)
+        print(c)
     } else {
         print(2*n)
     }
@@ -21,6 +21,7 @@ fun fib(n: Int): Int {
         b = c
         i++
     }
-
+    a = c
     return c
+    b = c + c
 }
