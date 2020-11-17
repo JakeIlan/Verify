@@ -20,14 +20,14 @@ a
 7	:	print(b)	rank:	2 default
 print
 b
-8	:	c == 0	rank:	1 if
-c
-9	:	print (c)	rank:	2 default
-print
-c
-10	:	return c	rank:	2 return
-return
-c
-11	:	return b	rank:	1 return
+8	:	return b	rank:	2 return
 return
 b
+9	:	c == 0	rank:	1 if
+c
+10	:	print (c)	rank:	2 default
+print
+c
+11	:	return c	rank:	2 return
+return
+c

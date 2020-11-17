@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Lab1 {
     public static void main(String[] args) {
-        File input = new File("src/input1.txt");
+        File input = new File("src/input2.txt");
         File output = new File("src/output.txt");
         //TODO: 'FOR' CYCLE
         try {
@@ -205,17 +205,14 @@ public class Lab1 {
 
             ArrayList<DotNode> subTree = new ArrayList<>();
             for (i = 0; i < dotNodes.size() - 1; i++) {
-                if (dotNodes.get(i).type.matches("function|variable|setter|default")) {
+                if (dotNodes.get(i).type.matches("variable|setter|default")) {
                     subTree.clear();
-//                    getControlBranch(dotNodes.get(i), subTree);
-//                    for (DotNode n : subTree) {
-//                        if (n.data.get(0).equals(var) && n.type.equals("setter")) {
-//                            break;
-//                        } else if (n.data.contains(var) && !var.equals("print")) {
-//                            if (!dotNodes.get(i).dataChildren.contains(n)) dotNodes.get(i).addDataChild(n);
-//                        }
-//                    }
-                    traceData(dotNodes.get(i), subTree, dotNodes.get(i));
+                    traceData(dotNodes.get(i), subTree, dotNodes.get(i), dotNodes.get(i).data.get(0));
+                } else if (dotNodes.get(i).type.equals("function")) {
+                    for (String var : dotNodes.get(i).data) {
+                        subTree.clear();
+                        traceData(dotNodes.get(i), subTree, dotNodes.get(i), var);
+                    }
                 }
             }
 
@@ -233,29 +230,29 @@ public class Lab1 {
         }
     }
 
-    static private void traceData(DotNode node, ArrayList<DotNode> storage, DotNode base) {
+    static private void traceData(DotNode node, ArrayList<DotNode> storage, DotNode base, String var) {
         if (node.leftControlChild != null && !storage.contains(node.leftControlChild)
                 && !node.leftControlChild.type.matches("muted|else")) {
             storage.add(node.leftControlChild);
-            if (!(node.leftControlChild.type.equals("setter") && node.leftControlChild.data.get(0).equals(base.data.get(0)))) {
+            if (!(node.leftControlChild.type.equals("setter") && node.leftControlChild.data.get(0).equals(var))) {
                 if (node.leftControlChild.data.size() > 0) {
-                    if (node.leftControlChild.data.contains(base.data.get(0)) && !base.data.get(0).equals("print")) {
+                    if (node.leftControlChild.data.contains(var) && !var.equals("print")) {
                         base.addDataChild(node.leftControlChild);
                     }
                 }
-                traceData(node.leftControlChild, storage, base);
+                traceData(node.leftControlChild, storage, base, var);
             }
         }
         if (node.rightControlChild != null && !storage.contains(node.rightControlChild)
                 && !node.rightControlChild.type.matches("muted|else")) {
             storage.add(node.rightControlChild);
-            if (!(node.rightControlChild.type.equals("setter") && node.rightControlChild.data.get(0).equals(base.data.get(0)))) {
+            if (!(node.rightControlChild.type.equals("setter") && node.rightControlChild.data.get(0).equals(var))) {
                 if (node.rightControlChild.data.size() > 0) {
-                    if (node.rightControlChild.data.contains(base.data.get(0)) && !base.data.get(0).equals("print")) {
+                    if (node.rightControlChild.data.contains(var) && !var.equals("print")) {
                         base.addDataChild(node.rightControlChild);
                     }
                 }
-                traceData(node.rightControlChild, storage, base);
+                traceData(node.rightControlChild, storage, base, var);
             }
         }
     }

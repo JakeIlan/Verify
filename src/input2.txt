@@ -1,0 +1,16 @@
+fun test(a: Int, b: Int): Int {
+    var c = 0
+    c = a - b
+    if (c > 0) {
+        print(a)
+        return a
+    } else {
+        print(b)
+        return b
+    }
+    if (c == 0) {
+        print (c)
+        return c
+    }
+
+}
