@@ -21,7 +21,5 @@ fun fib(n: Int): Int {
         b = c
         i++
     }
-    a = c
     return c
-    b = c + c
 }
